@@ -1,2 +1,2 @@
-# Mini-JavaScript-Games
-Note that the games are currently very rudimentary and may be updated in the future.
+# Mini-HTML-Games
+Note that the games may be updated in the future.
