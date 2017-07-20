@@ -1,0 +1,88 @@
+<canvas id = "gc" width = "640" height = "480"></canvas>
+<script>
+window.onload = function () {
+	canv = document.getElementById("gc");
+	ctx = canv.getContext("2d");
+	setInterval(update, 1000 / 30); //Updates the game 30 times a second
+	canv.addEventListener("mousemove", function(e) { //e is anonymous; inine function 
+		p1y = e.clientY - ph / 2;
+	});
+}
+p1y = p2y = 40; //Players 1 and 2 y coordinate
+pt = 10;
+ph = 100;
+bx = by = 50; //Ball x & ycoordinates
+bd = 6; //Ball dimension
+xv = yv = 4; //Ball x and y velocities
+score1 = score2 = 0; //Scores for players 1 and 2
+ais = 3; //AI speed value 
+
+function reset () {
+	bx = canv.width / 2;
+	by = canv.height / 2;
+	xv = -xv;
+	yv = 3;
+}
+
+function update () {
+	bx += xv;
+	by += yv;
+
+	//y-coordinate collision detection
+	if (by < 0 && yv < 0) {
+		yv = -yv;
+	}
+	if (by > canv.height && yv > 0) {
+		yv = -yv;
+	}
+
+	//x-coordinate collision detection
+		//For the left side
+	if (bx < 0) {
+		//Is the bally below the top of the paddle and above the bottom of the paddle
+		if (by > p1y && by < p1y + ph) {
+			xv = -xv; //Bounce the ball 
+			dy = by - (p1y + ph / 2); 
+			yv = dy * 0.3;
+		}
+		else { //The ball missed the paddle
+			score2++; //Increment score
+			reset();
+		}
+	} 
+
+	//For the right side
+	if (bx > canv.width) {
+		//Is the bally below the top of the paddle and above the bottom of the paddle
+		if (by > p2y && by < p2y + ph) {
+			xv = -xv; //Bounce the ball 
+			dy = by - (p2y + ph / 2); 
+			yv = dy * 0.3;
+		}
+		else { //Else if the ball missed the paddle
+			score1++; //Increment score
+			reset();
+		}
+	} 
+
+	//If the centre of the paddle2, y coordinate is below the ball
+	if (p2y + ph / 2 < by) {
+		p2y += ais; //
+	}
+	else {
+		p2y -= ais; //Move the ball down
+	}
+
+	ctx.fillStyle = "black";
+	ctx.fillRect(0, 0, canv.width, canv.height);
+	ctx.fillStyle = "white";
+	ctx.fillRect(0, p1y, pt, ph);
+	ctx.fillRect(canv.width - pt, p2y, pt, ph);
+
+	//Draw the ball
+		//Centre the ball coordinates
+	ctx.fillRect(bx - bd / 2, by - bd / 2, bd, bd);
+	ctx.fillText(score1, 100, 100);
+	ctx.fillText(score2, canv.width - 100, 100);
+}
+</script>

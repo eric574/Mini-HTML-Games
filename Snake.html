@@ -1,0 +1,72 @@
+<canvas id = "gc" width = "400" height = "400"></canvas>
+<script>
+window.onload=function() {
+	canv = document.getElementById("gc");
+	ctx = canv.getContext("2d");
+	document.addEventListener("keydown", keyPush);
+	setInterval(game, 1000/15); //Updates the game 15 times a second
+	}
+gs = tc = 20; //gs = grid size, tc = tile count 
+fx = fy = 15; //fx = food x coordinate, fy = food y coordinate
+xv = yv = 0; // xv = x velocity, yv = y velocity 
+px = py = Math.floor(Math.random() * tc); //Player positions
+trail = [];
+tail = 5;
+
+function game () {
+	px += xv;
+	py += yv;
+	if (px < 0) {
+		px = tc - 1;
+	}
+	if (px > tc - 1) {
+		px = 0;
+	}
+	if (py < 0) {
+		py = tc - 1;
+	}
+	if (py > tc - 1) {
+		py = 0;
+	}
+	ctx.fillStyle = "black";
+	ctx.fillRect(0, 0, canv.width, canv.height);
+
+	ctx.fillStyle = "lime";
+	for (var i=0; i<trail.length; i++) {
+		ctx.fillRect(trail[i].x * gs, trail[i].y * gs, gs - 2, gs - 2);
+		if (trail[i].x == px && trail[i].y == py) {
+			tail = 5;
+		}
+	}
+	trail.push({x:px, y:py});
+	while(trail.length > tail) {
+		trail.shift(); //Removes the first item in the trail array
+	}
+
+	if (px == fx && py == fy) {
+		tail++;
+		//Randomize the food coordinates
+		fx = Math.floor(Math.random() * tc); 
+		fy = Math.floor(Math.random() * tc);
+	}
+	ctx.fillStyle = "yellow";
+	ctx.fillRect(fx * gs, fy * gs, gs - 2, gs - 2);
+}
+
+function keyPush(evt) {
+	switch(evt.keyCode) { //Gets the Unicode value of the pressed keyboard key
+		case 37:
+			xv = -1; yv = 0;
+			break;
+		case 38:
+			xv = 0; yv = -1;
+			break;
+		case 39:
+			xv = 1; yv = 0;
+			break;
+		case 40:
+			xv = 0; yv = 1;
+			break;
+	}
+}
+</script>
